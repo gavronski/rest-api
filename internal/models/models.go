@@ -1,13 +1,17 @@
-package models 
+package models
+
+import "time"
 
 type Player struct {
-	ID int 
-	FirstName string 
-	LastName string 
-	Age int 
-	Country string 
-	Club string 
-	Position string 
-	Goals int 
-	Assists int 
+	ID        int       `json:"id"`
+	FirstName string    `json:"firstName"`
+	LastName  string    `json:"lastName"`
+	Age       int       `json:"age"`
+	Country   string    `json:"country"`
+	Club      string    `json:"club"`
+	Position  string    `json:"position"`
+	Goals     int       `json:"goals"`
+	Assists   int       `json:"assists"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
