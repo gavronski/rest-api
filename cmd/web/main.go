@@ -7,10 +7,13 @@ import (
 	"encoding/gob"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/joho/godotenv"
 )
+
+var port string = ":8080"
 
 func main() {
 	db, err := run()
@@ -22,6 +25,15 @@ func main() {
 	// close db connection when app stops
 	defer db.SQL.Close()
 
+	srv := &http.Server{
+		Addr:    port,
+		Handler: routes(),
+	}
+
+	err = srv.ListenAndServe()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 func run() (*driver.DB, error) {
 	gob.Register(models.Player{})
