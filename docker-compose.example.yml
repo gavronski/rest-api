@@ -1,0 +1,22 @@
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+          - .:/var/www/html
+    links:
+      - db
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: 
+      POSTGRES_PASSWORD: 
+      POSTGRES_DB: players
+    ports:
+      - "5432:5432"
+    volumes:
+      - mydatabase:/var/lib/postgresql/data
+volumes:
+  mydatabase:
