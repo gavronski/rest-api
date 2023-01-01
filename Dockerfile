@@ -13,6 +13,7 @@ RUN go mod download
 # Copy the source code into the image
 COPY . /var/www/html
 
+# Install soda
 RUN go install github.com/gobuffalo/pop/v6/soda@latest
 
 # Compile Go app
