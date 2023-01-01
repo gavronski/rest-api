@@ -4,6 +4,8 @@ import (
 	"app/internal/driver"
 	"app/internal/repository"
 	"app/internal/repository/dbrepo"
+	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -28,5 +30,14 @@ func NewHandlers(r *Repository) {
 }
 
 func (m *Repository) GetPlayers(w http.ResponseWriter, r *http.Request) {
+	players, err := m.DB.GetPlayers()
 
+	if err != nil {
+		log.Println(err)
+	}
+
+	out, _ := json.MarshalIndent(players, "", "    ")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
 }
