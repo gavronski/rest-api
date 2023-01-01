@@ -1,0 +1,7 @@
+development:
+  dialect: postgres
+  database: players
+  user: 
+  password: 
+  host: db
+  pool: 5
