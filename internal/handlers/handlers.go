@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"app/internal/driver"
+	"app/internal/models"
 	"app/internal/repository"
 	"app/internal/repository/dbrepo"
 	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -29,14 +29,57 @@ func NewHandlers(r *Repository) {
 	Repo = r
 }
 
+type jsonResponse struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+}
+
+// GetPlayers - returns all players in JSON format
 func (m *Repository) GetPlayers(w http.ResponseWriter, r *http.Request) {
 	players, err := m.DB.GetPlayers()
 
 	if err != nil {
-		log.Println(err)
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	out, _ := json.MarshalIndent(players, "", "    ")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
+}
+
+// PostPlayer - decodes JSON to Player and inserts record to players table
+func (m *Repository) PostPlayer(w http.ResponseWriter, r *http.Request) {
+	var player models.Player
+
+	// decode request's body
+	err := json.NewDecoder(r.Body).Decode(&player)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// insert player into db
+	err = m.DB.InsertPlayer(player)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	responseJSON(w, http.StatusOK, "ok")
+}
+
+// responseJSON sends JSON response
+func responseJSON(w http.ResponseWriter, status int, message string) {
+	jsonResponse := &jsonResponse{
+		Status:  status,
+		Message: message,
+	}
+
+	out, _ := json.MarshalIndent(jsonResponse, "", "    ")
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)

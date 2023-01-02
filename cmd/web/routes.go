@@ -10,5 +10,6 @@ import (
 func routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Get("/players", handlers.Repo.GetPlayers)
+	mux.Post("/players", handlers.Repo.PostPlayer)
 	return mux
 }
