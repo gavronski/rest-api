@@ -35,6 +35,7 @@ func main() {
 		log.Fatal(err)
 	}
 }
+
 func run() (*driver.DB, error) {
 	gob.Register(models.Player{})
 
@@ -51,7 +52,7 @@ func run() (*driver.DB, error) {
 	dbHost := os.Getenv("DB_HOST")
 	dbSSL := os.Getenv("DB_SSL")
 
-	// Connect to database
+	// connect to database
 	log.Println("Connecting to databse ...")
 
 	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", dbHost, dbPort, dbName, dbUser, dbPass, dbSSL)
