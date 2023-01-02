@@ -75,6 +75,7 @@ func (m *Repository) PostPlayer(w http.ResponseWriter, r *http.Request) {
 	responseJSON(w, http.StatusOK, "ok")
 }
 
+// UpdatePlayer - handler func to update player fields
 func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
 	var player models.Player
 
@@ -97,6 +98,26 @@ func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
 
 	// update player fields
 	err = m.DB.UpdatePlayer(player)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	responseJSON(w, http.StatusOK, "ok")
+}
+
+// DeletePlayer - handler func for deleting player row
+func (m *Repository) DeletePlayer(w http.ResponseWriter, r *http.Request) {
+	id, err := getID(r.URL)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// delete player row
+	err = m.DB.DeletePlayer(id)
 
 	if err != nil {
 		responseJSON(w, http.StatusBadRequest, err.Error())

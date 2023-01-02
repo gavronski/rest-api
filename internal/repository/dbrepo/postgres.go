@@ -105,3 +105,19 @@ func (m *postgresDBRepo) UpdatePlayer(player models.Player) error {
 
 	return nil
 }
+
+// DeletePlayer - deletes player row from the table
+func (m *postgresDBRepo) DeletePlayer(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `delete from players where id = $1`
+
+	_, err := m.DB.ExecContext(ctx, query, id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
