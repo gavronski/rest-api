@@ -7,6 +7,9 @@ import (
 	"app/internal/repository/dbrepo"
 	"encoding/json"
 	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 )
 
 // Repository is the repository type
@@ -72,6 +75,37 @@ func (m *Repository) PostPlayer(w http.ResponseWriter, r *http.Request) {
 	responseJSON(w, http.StatusOK, "ok")
 }
 
+func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
+	var player models.Player
+
+	id, err := getID(r.URL)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	player.ID = id
+
+	// decode request's body
+	err = json.NewDecoder(r.Body).Decode(&player)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	// update player fields
+	err = m.DB.UpdatePlayer(player)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	responseJSON(w, http.StatusOK, "ok")
+}
+
 // responseJSON sends JSON response
 func responseJSON(w http.ResponseWriter, status int, message string) {
 	jsonResponse := &jsonResponse{
@@ -83,4 +117,17 @@ func responseJSON(w http.ResponseWriter, status int, message string) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
+}
+
+func getID(url *url.URL) (int, error) {
+	// get only id from the address
+	id := strings.Replace(url.Path, "/players/", "", -1)
+
+	playerID, err := strconv.Atoi(id)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return playerID, nil
 }

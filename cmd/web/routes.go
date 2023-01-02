@@ -11,5 +11,6 @@ func routes() http.Handler {
 	mux := chi.NewRouter()
 	mux.Get("/players", handlers.Repo.GetPlayers)
 	mux.Post("/players", handlers.Repo.PostPlayer)
+	mux.Patch("/players/{id}", handlers.Repo.UpdatePlayer)
 	return mux
 }
