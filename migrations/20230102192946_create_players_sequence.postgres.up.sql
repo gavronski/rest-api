@@ -1,3 +1,3 @@
 CREATE SEQUENCE players_sequence
-  start 3
+  start 4
   increment 1;
