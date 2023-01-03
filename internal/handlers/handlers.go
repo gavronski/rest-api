@@ -39,6 +39,7 @@ type jsonResponse struct {
 
 // GetPlayers - returns all players in JSON format
 func (m *Repository) GetPlayers(w http.ResponseWriter, r *http.Request) {
+	var players []models.Player
 	players, err := m.DB.GetPlayers()
 
 	if err != nil {
@@ -125,6 +126,29 @@ func (m *Repository) DeletePlayer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	responseJSON(w, http.StatusOK, "ok")
+}
+
+// GetPlayer handler func which returs only one player's data
+func (m *Repository) GetPlayer(w http.ResponseWriter, r *http.Request) {
+	id, err := getID(r.URL)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var player models.Player
+	player, err = m.DB.GetPlayer(id)
+
+	if err != nil {
+		responseJSON(w, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	out, _ := json.MarshalIndent(player, "", "    ")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(out)
 }
 
 // responseJSON sends JSON response

@@ -121,3 +121,33 @@ func (m *postgresDBRepo) DeletePlayer(id int) error {
 
 	return nil
 }
+
+// GetPlayer - select player from players table
+func (m *postgresDBRepo) GetPlayer(id int) (models.Player, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var player models.Player
+	query := `select * from players where id = $1;`
+
+	row := m.DB.QueryRowContext(ctx, query, id)
+
+	err := row.Scan(
+		&player.ID,
+		&player.FirstName,
+		&player.LastName,
+		&player.Age,
+		&player.Country,
+		&player.Club,
+		&player.Position,
+		&player.Goals,
+		&player.Assists,
+		&player.CreatedAt,
+		&player.UpdatedAt)
+
+	if err != nil {
+		return player, err
+	}
+
+	return player, nil
+}
