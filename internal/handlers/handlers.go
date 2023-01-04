@@ -161,6 +161,7 @@ func responseJSON(w http.ResponseWriter, status int, message string) {
 	out, _ := json.MarshalIndent(jsonResponse, "", "    ")
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusBadRequest)
 	w.Write(out)
 }
 
