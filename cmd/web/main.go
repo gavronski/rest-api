@@ -4,6 +4,8 @@ import (
 	"app/internal/driver"
 	"app/internal/handlers"
 	"app/internal/models"
+	"app/internal/repository"
+	"app/internal/repository/dbrepo"
 	"encoding/gob"
 	"fmt"
 	"log"
@@ -14,6 +16,21 @@ import (
 )
 
 var port string = ":8080"
+
+// Repository is the repository type
+type Repository struct {
+	DB repository.DatabaseRepo
+}
+
+// Repo the repository used by the middleware
+var mainRepo *Repository
+
+// NewRepo creates new repository
+func NewRepo(db *driver.DB) *Repository {
+	return &Repository{
+		DB: dbrepo.NewPostgresRepo(db.SQL),
+	}
+}
 
 func main() {
 	db, err := run()
@@ -62,6 +79,7 @@ func run() (*driver.DB, error) {
 		log.Fatal(err)
 	}
 
+	mainRepo = NewRepo(db)
 	repo := handlers.NewRepo(db)
 	handlers.NewHandlers(repo)
 	return db, nil

@@ -3,8 +3,11 @@ package dbrepo
 import (
 	"app/internal/models"
 	"context"
+	"errors"
 	"log"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // GetPlayers - selects all player from players table
@@ -150,4 +153,30 @@ func (m *postgresDBRepo) GetPlayer(id int) (models.Player, error) {
 	}
 
 	return player, nil
+}
+
+// Authenticate - compare data from the request and db
+func (m *postgresDBRepo) Authenticate(login, testPassword string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var hashedPassword string
+
+	row := m.DB.QueryRowContext(ctx, "select password from users where login = $1", login)
+
+	err := row.Scan(&hashedPassword)
+	if err != nil {
+		return err
+	}
+
+	// compare password given from table with password from request
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
+
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return errors.New("incorrect password")
+	} else if err != nil {
+		return err
+	}
+
+	return nil
 }

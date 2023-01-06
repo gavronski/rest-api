@@ -8,4 +8,5 @@ type DatabaseRepo interface {
 	UpdatePlayer(player models.Player) error
 	DeletePlayer(id int) error
 	GetPlayer(id int) (models.Player, error)
+	Authenticate(login, testPassword string) error
 }
