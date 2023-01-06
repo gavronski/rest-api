@@ -9,4 +9,5 @@ type DatabaseRepo interface {
 	DeletePlayer(id int) error
 	GetPlayer(id int) (models.Player, error)
 	Authenticate(login, testPassword string) error
+	GetMaxID() (int, error)
 }

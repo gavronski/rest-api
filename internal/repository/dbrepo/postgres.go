@@ -4,6 +4,7 @@ import (
 	"app/internal/models"
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -87,12 +88,23 @@ func (m *postgresDBRepo) UpdatePlayer(player models.Player) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
+	var maxID int
+	maxID, err := m.GetMaxID()
+
+	if err != nil {
+		return err
+	}
+
+	if player.ID > maxID {
+		return fmt.Errorf("given id [%d] is out of the range", player.ID)
+	}
+
 	query := `
 	update players 
 		set age = $1, club = $2, position = $3, goals = $4, assists = $5, updated_at = $6
 	where id = $7;`
 
-	_, err := m.DB.ExecContext(ctx, query,
+	_, err = m.DB.ExecContext(ctx, query,
 		player.Age,
 		player.Club,
 		player.Position,
@@ -114,9 +126,20 @@ func (m *postgresDBRepo) DeletePlayer(id int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
+	var maxID int
+	maxID, err := m.GetMaxID()
+
+	if err != nil {
+		return err
+	}
+
+	if id > maxID {
+		return fmt.Errorf("given id [%d] is out of the range", id)
+	}
+
 	query := `delete from players where id = $1`
 
-	_, err := m.DB.ExecContext(ctx, query, id)
+	_, err = m.DB.ExecContext(ctx, query, id)
 
 	if err != nil {
 		return err
@@ -179,4 +202,24 @@ func (m *postgresDBRepo) Authenticate(login, testPassword string) error {
 	}
 
 	return nil
+}
+
+// GetMaxID retruns max id from players table
+func (m *postgresDBRepo) GetMaxID() (int, error) {
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var id int
+	query := `select max(id) as id from players;`
+	row := m.DB.QueryRowContext(ctx, query)
+	err := row.Scan(
+		&id,
+	)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return id, nil
 }
