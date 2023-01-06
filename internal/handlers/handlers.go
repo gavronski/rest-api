@@ -61,6 +61,7 @@ func (m *Repository) PostPlayer(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&player)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -69,6 +70,7 @@ func (m *Repository) PostPlayer(w http.ResponseWriter, r *http.Request) {
 	err = m.DB.InsertPlayer(player)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -83,6 +85,7 @@ func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
 	id, err := getID(r.URL)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -93,6 +96,7 @@ func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
 	err = json.NewDecoder(r.Body).Decode(&player)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -101,6 +105,7 @@ func (m *Repository) UpdatePlayer(w http.ResponseWriter, r *http.Request) {
 	err = m.DB.UpdatePlayer(player)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -113,6 +118,7 @@ func (m *Repository) DeletePlayer(w http.ResponseWriter, r *http.Request) {
 	id, err := getID(r.URL)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -121,6 +127,7 @@ func (m *Repository) DeletePlayer(w http.ResponseWriter, r *http.Request) {
 	err = m.DB.DeletePlayer(id)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -133,6 +140,7 @@ func (m *Repository) GetPlayer(w http.ResponseWriter, r *http.Request) {
 	id, err := getID(r.URL)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -141,6 +149,7 @@ func (m *Repository) GetPlayer(w http.ResponseWriter, r *http.Request) {
 	player, err = m.DB.GetPlayer(id)
 
 	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
 		responseJSON(w, http.StatusBadRequest, err.Error())
 		return
 	}
@@ -161,7 +170,6 @@ func responseJSON(w http.ResponseWriter, status int, message string) {
 	out, _ := json.MarshalIndent(jsonResponse, "", "    ")
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusBadRequest)
 	w.Write(out)
 }
 
