@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -45,7 +44,7 @@ func (m *postgresDBRepo) GetPlayers() ([]models.Player, error) {
 		if err != nil {
 			return players, err
 		}
-		log.Println(player)
+
 		players = append(players, player)
 	}
 	return players, nil
@@ -148,8 +147,8 @@ func (m *postgresDBRepo) DeletePlayer(id int) error {
 	return nil
 }
 
-// GetPlayer - select player from players table
-func (m *postgresDBRepo) GetPlayer(id int) (models.Player, error) {
+// GetPlayerByID - select player from players table
+func (m *postgresDBRepo) GetPlayerByID(id int) (models.Player, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 

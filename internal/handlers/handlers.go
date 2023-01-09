@@ -146,7 +146,7 @@ func (m *Repository) GetPlayer(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var player models.Player
-	player, err = m.DB.GetPlayer(id)
+	player, err = m.DB.GetPlayerByID(id)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

@@ -57,5 +57,5 @@ ALTER TABLE ONLY public.players
     ADD CONSTRAINT players_pkey PRIMARY KEY (id);
 
 CREATE SEQUENCE players_sequence
-  start 4
+  start 1
   increment 1;
