@@ -16,6 +16,9 @@ COPY . /var/www/html
 # Install soda
 RUN go install github.com/gobuffalo/pop/v6/soda@latest
 
+# Install Dockertest 
+RUN go get -u github.com/ory/dockertest/v3
+
 # Compile Go app
 RUN go build -o /app ./cmd/web/*.go
 
