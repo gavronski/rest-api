@@ -14,3 +14,12 @@ func NewPostgresRepo(conn *sql.DB) repository.DatabaseRepo {
 		DB: conn,
 	}
 }
+
+// testDBREpo created to test hanlders
+type testDBRepo struct {
+}
+
+// NewTestingRepo sets testDBRepo
+func NewTestingRepo() repository.DatabaseRepo {
+	return &testDBRepo{}
+}
