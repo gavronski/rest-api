@@ -3,7 +3,6 @@ package dbrepo
 import (
 	"app/internal/models"
 	"errors"
-	"log"
 )
 
 // GetPlayers - selects all player from players table
@@ -16,7 +15,6 @@ func (m *testDBRepo) GetPlayers() ([]models.Player, error) {
 // InsertPlayers - adds player record to players table
 func (m *testDBRepo) InsertPlayer(player models.Player) error {
 	if player.FirstName == "Lionel" {
-		log.Println("lionel")
 		return errors.New("error while inserting player")
 	}
 
@@ -26,7 +24,7 @@ func (m *testDBRepo) InsertPlayer(player models.Player) error {
 // UpdatePlayer - updates player fields
 func (m *testDBRepo) UpdatePlayer(player models.Player) error {
 	if player.ID == 9 {
-		return errors.New("error while inserting player")
+		return errors.New("error while updating player")
 	}
 
 	return nil
@@ -35,7 +33,7 @@ func (m *testDBRepo) UpdatePlayer(player models.Player) error {
 // DeletePlayer - deletes player row from the table
 func (m *testDBRepo) DeletePlayer(id int) error {
 	if id == 9 {
-		return errors.New("error while inserting player")
+		return errors.New("error while deleting player")
 	}
 
 	return nil
@@ -46,7 +44,7 @@ func (m *testDBRepo) GetPlayerByID(id int) (models.Player, error) {
 	var player models.Player
 
 	if id == 9 {
-		return player, errors.New("error while inserting player")
+		return player, errors.New("error while returning a player")
 	}
 	return player, nil
 }
