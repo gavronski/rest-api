@@ -27,6 +27,13 @@ func NewRepo(db *driver.DB) *Repository {
 	}
 }
 
+// NewTestingRepo creates new repository
+func NewTestingRepo() *Repository {
+	return &Repository{
+		DB: dbrepo.NewTestingRepo(),
+	}
+}
+
 // Sets the repository
 func NewHandlers(r *Repository) {
 	Repo = r
