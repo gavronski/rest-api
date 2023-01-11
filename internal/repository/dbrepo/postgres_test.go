@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -95,19 +96,32 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
+// createTables - reads and runs all sql
 func createTables() error {
-	tableSQL, err := os.ReadFile("./testdata/players.sql")
+
+	files, err := filepath.Glob("./testdata/*.sql")
 
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	_, err = testDB.Exec(string(tableSQL))
+	for _, file := range files {
+		filename := filepath.Base(file)
 
-	if err != nil {
-		fmt.Println(err)
-		return err
+		tableSQL, err := os.ReadFile(fmt.Sprintf("./testdata/%s", filename))
+
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		_, err = testDB.Exec(string(tableSQL))
+
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
 
 	return nil
@@ -268,5 +282,25 @@ func TestPostgresDBRepDeletePlayer(t *testing.T) {
 }
 
 func TestPostgresDBRepoAuthenticate(t *testing.T) {
-	
+
+	// pass correct credentials
+	err := testRepo.Authenticate("admin", "admin")
+
+	if err != nil {
+		t.Errorf("authenticate reports an error %s", err)
+	}
+
+	// pass wrong login
+	err = testRepo.Authenticate("user", "admin")
+
+	if err == nil {
+		t.Error("login should have been invalid")
+	}
+
+	// pass correct login but invalid password
+	err = testRepo.Authenticate("admin", "test")
+
+	if err == nil {
+		t.Error("password should have been invalid")
+	}
 }
