@@ -7,7 +7,6 @@ import (
 	"app/internal/repository"
 	"app/internal/repository/dbrepo"
 	"encoding/gob"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -62,22 +61,18 @@ func run() (*driver.DB, error) {
 		log.Fatal(err)
 	}
 
-	dbName := os.Getenv("DB_NAME")
-	dbPass := os.Getenv("DB_PASS")
-	dbUser := os.Getenv("DB_USER")
-	dbPort := os.Getenv("DB_PORT")
-	dbHost := os.Getenv("DB_HOST")
-	dbSSL := os.Getenv("DB_SSL")
+	dsn := os.Getenv("DSN")
 
 	// connect to database
 	log.Println("Connecting to databse ...")
 
-	connectionString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=%s", dbHost, dbPort, dbName, dbUser, dbPass, dbSSL)
-	db, err := driver.ConnectSQL(connectionString)
+	db, err := driver.ConnectSQL(dsn)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println("Successfully connected to database!")
 
 	mainRepo = NewRepo(db)
 	repo := handlers.NewRepo(db)

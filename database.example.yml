@@ -1,7 +1,7 @@
 development:
   dialect: postgres
   database: players
-  user: 
-  password: 
+  user: postgres
+  password: root
   host: db
   pool: 5
