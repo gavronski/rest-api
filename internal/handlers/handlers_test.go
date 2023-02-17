@@ -96,18 +96,9 @@ func TestRepository_UpdatePlayer(t *testing.T) {
 
 func TestRepository_DeletePlayer(t *testing.T) {
 	testData := testData{
-		{"delete-player", "/players/1", "DELETE",
-			[]byte(
-				`{"firstName":"Cristiano","lastName":"Ronaldo","age":37,"country":"Portugal","club":"Manchester United","position":"striker","goals":24,"assists":6}`),
-			http.StatusOK},
-		{"delete-player", "/players/9", "DELETE",
-			[]byte(
-				`{"firstName":"Cristiano","lastName":"Ronaldo","age":37,"country":"Portugal","club":"Manchester United","position":"striker","goals":24,"assists":6}`),
-			http.StatusBadRequest},
-		{"delete-player", "/players", "DELETE",
-			[]byte(
-				`{"firstName":"Cristiano","lastName":"Ronaldo","age":37,"country":"Portugal","club":"Manchester United","position":"striker","goals":24,"assists":6}`),
-			http.StatusBadRequest},
+		{"delete-player", "/players/1", "DELETE", nil, http.StatusOK},
+		{"delete-player", "/players/9", "DELETE", nil, http.StatusBadRequest},
+		{"delete-player", "/players", "DELETE", nil, http.StatusBadRequest},
 	}
 
 	for _, e := range testData {
