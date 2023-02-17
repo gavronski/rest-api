@@ -4,7 +4,8 @@ This app has been written for the following purposes:
 * creating a simple REST API in Golang,
 * adding authentication middleware, 
 * writing integration tests with a database in Go. 
-I've used the Postgres database, and Docker to containerize the app. For database management, I've been using Soda CLI.  
+I've used the Postgres database, and Docker to containerize the app. 
+For database management, I've been using Soda CLI.  
  
 
 
