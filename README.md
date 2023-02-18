@@ -74,3 +74,13 @@ Then, run soda migrations and seed tables using command:
 ```bash 
     soda migrate
 ```
+
+## Running Tests
+
+To run all unit tests, run the following command from the root directory.
+
+```bash
+  go test -v ./...
+```
+
+To run integration test, make sure that you are in the directory ./internal/repository/dbrepo .
