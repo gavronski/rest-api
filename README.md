@@ -75,6 +75,7 @@ Then, run soda migrations and seed tables using command:
     soda migrate
 ```
 
+
 ## Running Tests
 
 To run all unit tests, run the following command from the root directory.
@@ -84,3 +85,51 @@ To run all unit tests, run the following command from the root directory.
 ```
 
 To run integration test, make sure that you are in the directory ./internal/repository/dbrepo .
+
+### Important steps: 
+#### 1. Creating docker connection 
+```golang
+// connect to docker
+p, err := dockertest.NewPool("")
+if err != nil {
+  log.Fatalf("Could not connect to docker: %s", err)
+}
+```
+#### 2. Setting up docker's options
+```golang
+// set up docker options
+options := dockertest.RunOptions{
+  Repository: "postgres",
+  Env: []string{
+    "POSTGRES_PASSWORD=" + password,
+    "POSTGRES_USER=" + user,
+    "POSTGRES_DB=" + dbName,
+    "listen_addresses = '*'",
+  },
+}
+```
+#### 3. Start docker container 
+```golang 
+resource, err = pool.RunWithOptions(&options)
+```
+
+#### 4. Create tables structure 
+```golang 
+// populate the database with empty tables
+err = createTables()
+if err != nil {
+  log.Fatalf("error while creating tables: %s", err)
+}
+```
+
+#### 5. Run tests in the container
+```golang 
+// run tests
+code := m.Run()
+```
+
+#### 6. Remove testing container
+```golang 
+// delete container after tests
+_ = pool.Purge(resource)
+```
